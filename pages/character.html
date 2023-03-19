@@ -25,12 +25,10 @@
         </div>
       </header>
       
+     
+      <div class="cards">
       
-      
-      
-    <div class="cards">  
     {{range $v := .Data.Results}}
-    <a href="/character?id={{.ID}}">
         <div class="card">
           <div class="cardImg">
             <img src="{{$v.Image}}" alt="{{$v.Name}}">
@@ -43,38 +41,29 @@
             </div>
         </div>
     {{end}}
-    </a>
+</div>
+<footer>
+  <div id="footercontent">
+<div class="textfooter">
+  <h1>A propos de nous</h1>
+  <p >
+    Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dicta, fuga
+    velit esse similique reiciendis iure quis recusandae odit doloremque
+    perferendis voluptates corporis iste vitae soluta eveniet! Ut
+    doloribus consequuntur fuga.
+  </p>
+</div>
+<div>
+  <h1>Nous contacter</h1>
+  <a href="">rickandmorty@wagadougou.fr</a>
 
-    </div>
 
-     
-      
-
-
-
-
-      <footer>
-        <div id="footercontent">
-      <div class="textfooter">
-        <h1>A propos de nous</h1>
-        <p >
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dicta, fuga
-          velit esse similique reiciendis iure quis recusandae odit doloremque
-          perferendis voluptates corporis iste vitae soluta eveniet! Ut
-          doloribus consequuntur fuga.
-        </p>
-      </div>
-      <div>
-        <h1>Nous contacter</h1>
-        <a href="">rickandmorty@wagadougou.fr</a>
-    
-    
-    </div>
-    </div>
-      <div id="copyright">
-        <p>©2023-2023. All right reserved</p>
-      </div>
-    </footer>
+</div>
+</div>
+<div id="copyright">
+  <p>©2023-2023. All right reserved</p>
+</div>
+</footer>
     
 </body>
 </html>

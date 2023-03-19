@@ -43,6 +43,7 @@ func main() {
 	//mise en place des templates
 	tmpl1 := template.Must(template.ParseFiles("./pages/index.html"))
 	tmpl2 := template.Must(template.ParseFiles("./pages/request.html"))
+	tmpl3 := template.Must(template.ParseFiles("./pages/character.html"))
 	//handle func
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/" {
@@ -64,6 +65,40 @@ func main() {
 		// Affichage des personnages dans la template request.html
 		tmpl2.Execute(w, Send)
 	})
+	http.HandleFunc("/character", func(w http.ResponseWriter, r *http.Request) {
+		params := r.URL.Query()
+		id := params.Get("id")
+		Send := Character{
+			Info: struct {
+				Count int    "json:\"count\""
+				Pages int    "json:\"pages\""
+				Next  string "json:\"next\""
+				Prev  any    "json:\"prev\""
+			}{},
+			Results: []struct {
+				ID      int    "json:\"id\""
+				Name    string "json:\"name\""
+				Status  string "json:\"status\""
+				Species string "json:\"species\""
+				Type    string "json:\"type\""
+				Gender  string "json:\"gender\""
+				Origin  struct {
+					Name string "json:\"name\""
+					URL  string "json:\"url\""
+				} "json:\"origin\""
+				Location struct {
+					Name string "json:\"name\""
+					URL  string "json:\"url\""
+				} "json:\"location\""
+				Image   string    "json:\"image\""
+				Episode []string  "json:\"episode\""
+				URL     string    "json:\"url\""
+				Created time.Time "json:\"created\""
+			}{},
+			Data: getCharacterDetails(id),
+		}
+		tmpl3.Execute(w, Send)
+	})
 	//lié le css
 	fs := http.FileServer(http.Dir("./style/"))
 	http.Handle("/style/", http.StripPrefix("/style/", fs))
@@ -77,6 +112,7 @@ func main() {
 
 }
 
+// fonction pour gérer les erreurs 404
 func errorHandler(w http.ResponseWriter, r *http.Request, status int) {
 	w.WriteHeader(status)
 	if status == http.StatusNotFound {
@@ -113,4 +149,34 @@ func characterData() *Character {
 
 	return &NewStruct
 
+}
+
+func getCharacterDetails(id string) *Character {
+	url := ("https://rickandmortyapi.com/api/character/" + id)
+
+	timeClient := http.Client{
+		Timeout: time.Second * 2,
+	}
+
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		panic(err)
+	}
+
+	req.Header.Set("User-Agent", "random-user-agent")
+	res, getErr := timeClient.Do(req)
+	if getErr != nil {
+		fmt.Println(getErr)
+	}
+	body, readErr := ioutil.ReadAll(res.Body)
+	if readErr != nil {
+		fmt.Println(readErr)
+	}
+	NewCharacterStruct := Character{}
+	jsonErr := json.Unmarshal(body, &NewCharacterStruct)
+	if jsonErr != nil {
+		fmt.Println(jsonErr)
+	}
+
+	return &NewCharacterStruct
 }
